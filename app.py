@@ -31,6 +31,28 @@ def preprocess_texts(text):
 	test = pad_sequences(sequence, maxlen=max_len)
 	return test
 
+def lstm_sent(text):
+	""" 
+	param:takes in a json file containing the text we want to summarize
+	returns: returns json containing sentiment value
+	"""
+	#array of sentiment
+	sentiment = ['Negative','Positive']
+	sequence = tokenizer.texts_to_sequences([text])
+	test = pad_sequences(sequence, maxlen=max_len)
+	senti = sentiment[np.around(best_model.predict(test), decimals=0).argmax(axis=1)[0]]
+	#end = time.time()
+	#final_time = end-start
+	#print(final_time)
+	return senti
+
+
+######################
+#home page
+#######################
+@app.route('/', methods =['GET','POST'])
+def index():
+	return ("sentiment Analysis home page")
 
 ##########################################
 #sentiment Analysis
@@ -79,11 +101,13 @@ def text_sum():
 		end = time.time()
 		final_time = end-start
 		print(final_time)
-	return flask.jsonify(Summary=final_summary_nltk , Time=final_time)
+		sentiment = lstm_sent(final_summary_nltk)
+	return flask.jsonify(Summary=final_summary_nltk , Time=final_time, Sentiment =sentiment)
 
 
 
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	#app.run(debug=True)
+	app.run(debug=True, host = "10.10.30.98")

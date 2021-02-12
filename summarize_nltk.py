@@ -34,7 +34,12 @@ def nltk_summarizer(raw_text):
 	summary_sentences = heapq.nlargest(7, sentence_scores, key=sentence_scores.get)
 
 	summary = ' '.join(summary_sentences)  
-	return summary
+	if not summary:
+		return raw_text
+	else: 	
+	 	return summary
+
+
 
 
 #print(nltk_summarizer(raw_text))
